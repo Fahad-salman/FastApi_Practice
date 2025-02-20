@@ -25,3 +25,11 @@ def get_product_by_id(product_id: int):
     if product.empty:
         raise HTTPException(status_code=NO_DATA_FOUND, detail="Product not found")
     return product.to_dict(orient="records")[0] # Return first matching product as dict
+
+# Search by product name.
+@app.get("/products/search/{product_name}")
+def search_product(product_name: str):
+    matched_products = df[df["product_name"].str.contains(product_name, case=False, na=False)]
+    if matched_products.empty:
+        raise HTTPException(status_code=NO_DATA_FOUND, detail=f"There's no product like {product_name} ")
+    return matched_products.to_dict(orient="records")
