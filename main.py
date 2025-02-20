@@ -13,12 +13,11 @@ NO_DATA_FOUND = 404
 app = FastAPI()
 
 # Get all product
-
 @app.get("/products/")
 def get_products():
     return df.to_dict(orient="records")
 
-
+# Get product by id
 @app.get("/product/{product_id}")
 def get_product_by_id(product_id: int):
     product = df[df["product_id"] == product_id] # Filter by product_id
@@ -33,3 +32,16 @@ def search_product(product_name: str):
     if matched_products.empty:
         raise HTTPException(status_code=NO_DATA_FOUND, detail=f"There's no product like {product_name} ")
     return matched_products.to_dict(orient="records")
+
+# Delete product
+@app.delete("/delete/product/{product_id}")
+def delete_product(product_id: int):
+    global df
+    if product_id not in df["product_id"].values:
+        raise HTTPException(status_code=NO_DATA_FOUND, detail="Product not found")
+    
+    df[df["product_id"] != product_id]
+    
+    df.to_json("products.json", orient="records", indent=4)
+    
+    return {"message": f"Product with ID {product_id} deleted successfully"}
