@@ -4,7 +4,7 @@ import pandas as pd
 # install the following packages 
 # # pip install fastapi uvicorn
 
-# To run our API : ( py -m uvicorn FAST_API_Example:app --reload ) or ( python3 -m uvicorn FAST_API_Example:app --reload ) 
+# To run our API : ( py -m uvicorn FAST_API_Example:app --reload ) or ( python3 -m uvicorn FAST_API_Example:app --reload ) -> "FAST_API_Example" change it to your python file name.
 # here's the API url (http://127.0.0.1:8000/products/)
 
 df = pd.read_json("products.json")
@@ -45,3 +45,36 @@ def delete_product(product_id: int):
     df.to_json("products.json", orient="records", indent=4)
     
     return {"message": f"Product with ID {product_id} deleted successfully"}
+
+
+# Update Product
+@app.put("/update/product/{product_id}")
+def update_product(product_id: int, product_name: str = None, price: float = None, expiration_date: str = None):
+    global df
+
+    # Check if product exists
+    if product_id not in df["product_id"].values:
+        raise HTTPException(status_code=404, detail="The product does not exist.")
+
+    # Ensure at least one field is provided
+    if not any([product_name, price, expiration_date]):
+        raise HTTPException(status_code=400, detail="At least one field must be provided for update.")
+
+    # Locate the index of the product to update
+    index = df[df["product_id"] == product_id].index[0]
+
+    # Update only the provided fields
+    if product_name is not None:
+        df.at[index, "product_name"] = product_name
+    if price is not None:
+        df.at[index, "price"] = price
+    if expiration_date is not None:
+        df.at[index, "expiration_date"] = expiration_date
+
+    # Save updated DataFrame back to JSON file
+    df.to_json("products.json", orient="records", indent=4)
+
+    return {
+        "message": f"Product with ID {product_id} updated successfully",
+        "updated_product": df.iloc[index].to_dict()
+    }

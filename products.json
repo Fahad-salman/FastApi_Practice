@@ -1,9 +1,9 @@
 [
     {
         "product_id":1,
-        "product_name":"Authentic Toothpaste",
-        "price":30.86,
-        "expiration_date":"2025-05-22"
+        "product_name":"MacBook_M3",
+        "price":4799.0,
+        "expiration_date":" "
     },
     {
         "product_id":2,
