@@ -1,17 +1,18 @@
 from fastapi import FastAPI, HTTPException, Query, status
+
 import pandas as pd
 from typing import Optional
 
 # install the following packages 
-# # pip install fastapi uvicorn
+# pip install fastapi uvicorn
 
 # To run our API : ( py -m uvicorn FAST_API_Example:app --reload ) or ( python3 -m uvicorn FAST_API_Example:app --reload ) -> "FAST_API_Example" change it to your python file name.
 # here's the API url (http://127.0.0.1:8000/products/)
 
-df = pd.read_json("products.json")
 
+df = pd.read_json("../Data/products.json")
 
-app = FastAPI()
+app = FastAPI()    
 
 # Get all product
 @app.get("/products/")
@@ -82,7 +83,6 @@ def advanced_search(
 
     return results.to_dict(orient="records")
         
-
 # Delete product
 @app.delete("/delete/product/{product_id}")
 def delete_product(product_id: int):
