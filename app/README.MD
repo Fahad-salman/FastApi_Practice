@@ -1,0 +1,3 @@
+To Run this app you have to be in this path (./Python_FastApi)
+Then you will run this command : "py -m uvicorn app.main:app --reload" or "python uvicorn app.main:app --reload"
+....
